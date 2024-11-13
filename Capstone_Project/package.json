@@ -1,0 +1,17 @@
+{
+  "name": "smartserve",
+  "version": "1.0.0",
+  "description": "SmartServe Project",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "fetch-yelp": "node yelpFetch.js"
+  },
+  "dependencies": {
+    "axios": "^0.21.4",
+    "body-parser": "^1.20.3",
+    "cassandra-driver": "^4.7.2",
+    "express": "^4.21.0",
+    "uuid": "^8.3.2"
+  }
+}
