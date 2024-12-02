@@ -7,216 +7,201 @@
   <style>
     body {
       margin: 0;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f7f9fc;
       color: #333;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .data-container {
       background-color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      margin-bottom: 20px;
     }
 
     h3 {
       margin-top: 0;
-    }
-
-    pre, .analysis-result {
-      background-color: #e8e8e8;
-      padding: 15px;
-      border-radius: 5px;
-      white-space: pre-wrap;
+      color: #444;
     }
 
     .buttons {
       display: flex;
-      gap: 10px;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
       margin-bottom: 20px;
     }
 
     .buttons button {
-      padding: 10px;
+      padding: 12px 20px;
       font-size: 14px;
       cursor: pointer;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       background-color: #007bff;
       color: white;
+      transition: all 0.3s ease;
     }
 
     .buttons button:hover {
       background-color: #0056b3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
+
+    .analysis-result {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      white-space: pre-wrap;
+      margin-top: 10px;
+      line-height: 1.0;
+    }
+
+    .chart-container {
+      display: none;
+      max-width: 100%;
+      height: 300px;
+      margin-top: 15px;
+    }
+
+    .chart-container.active {
+      display: block;
+    }
+
+    .date-display {
+      text-align: right;
+      font-size: 1em;
+      color: #555;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      max-height: 300px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      color: #777;
+      background-color: #f1f1f1;
+      border-top: 1px solid #ddd;
+    }
+
+    footer a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Typing Animation */
+    .loading-text {
+      font-size: 1.5em;
+      color: #333;
+      text-align: center;
+      padding-top: 20px;
+      font-family: 'Lora', serif;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+      animation: typing 5s steps(50) 1s forwards,  step-end infinite;
+    }
+
+    @keyframes typing {
+      to {
+        width: 100%;
+      }
+    }
+
+    @keyframes blink {
+      50% {
+        border-color: transparent;
+      }
+    }
+
+
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<div class="data-container">
-  <h3>Restaurant Data Analysis:</h3>
-  <div class="buttons">
-    <button onclick="showRatingAnalysis()">Rating Analysis</button>
-    <button onclick="showSentimentAnalysis()">Sentiment Analysis</button>
-    <button onclick="showAreasToImprove()">Areas to Improve</button>
-    <button onclick="showMenuFeedback()">Menu Feedback</button>
+<div class="container">
+  <!-- Typing text at the top -->
+  <div class="loading-text" id="loadingText">Welcome to SmartServe: Empowering Restaurants with Data</div>
+
+  <!-- Sign Out Button -->
+  <div class="buttons" style="justify-content: flex-end; margin-bottom: 10px;">
+    <button onclick="signOut()"> Sign Out ↪️</button>
   </div>
-  <div id="analysisDisplay" class="analysis-result"></div>
+
+  <div class="data-container">
+    <div class="date-display" id="dateDisplay"></div>
+    <h3>Restaurant Data Analysis</h3>
+    <div class="buttons">
+      <button onclick="showRatingAnalysis()">Rating Analysis</button>
+      <button onclick="showSentimentAnalysis()">Sentiment Analysis</button>
+      <button onclick="showAreasToImprove()">Areas to Improve</button>
+      <button onclick="showMenuFeedback()">Menu Feedback</button>
+    </div>
+    <div id="analysisDisplay" class="analysis-result"></div>
+
+    <h3>POS Data Analysis</h3>
+    <div class="buttons">
+      <button id="mostSellingButton">Most Selling Item</button>
+      <button id="lessSellingButton">Less Selling Item</button>
+      <button id="expectedSalesDay">Expected Sales (Day)</button>
+      <button id="expectedSalesWeek">Expected Sales (Week)</button>
+      <button id="expectedSalesMonth">Expected Sales (Month)</button>
+    </div>
+    <div id="posAnalysisDisplay" class="analysis-result"></div>
+    <div id="chartContainer" class="chart-container">
+      <canvas id="posChart"></canvas>
+    </div>
+  </div>
 </div>
 
+
+<footer>
+  Powered by <a href="#">SmartServe</a>. All rights reserved.
+</footer>
 <script>
-  // Retrieve restaurant data from local storage
-  const restaurantData = JSON.parse(localStorage.getItem('restaurantData'));
-  if (!restaurantData) {
-    alert('No restaurant data found. Please go back and authenticate.');
-    window.location.href = '/dashboard.html';
+  // Dynamic Date and Time Display
+  function updateDateTime() {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-US', options);
   }
 
-  // Function to perform Rating Analysis
-  function showRatingAnalysis() {
-    const ratings = restaurantData.map(item => item.ratings);
-    const averageRating = (ratings.reduce((acc, rating) => acc + rating, 0) / ratings.length).toFixed(2);
-
-    // Count ratings distribution
-    const excellent = ratings.filter(rating => rating >= 4.5).length;
-    const good = ratings.filter(rating => rating >= 3.5 && rating < 4.5).length;
-    const average = ratings.filter(rating => rating >= 2.5 && rating < 3.5).length;
-    const poor = ratings.filter(rating => rating < 2.5).length;
-
-    const ratingDistribution = `Rating Distribution:
-  - Excellent (4.5 - 5): ${excellent}
-  - Good (3.5 - 4.4): ${good}
-  - Average (2.5 - 3.4): ${average}
-  - Poor (below 2.5): ${poor}`;
-
-    const summary = `Average Rating: ${averageRating} out of 5\n\n${ratingDistribution}`;
-
-    document.getElementById('analysisDisplay').textContent = summary;
-  }
-
-
-  // Function to perform Sentiment Analysis
-  function showSentimentAnalysis() {
-    const reviews = restaurantData.flatMap(item => item.reviews).join(' ').toLowerCase();
-
-    const positiveKeywords = ["great", "excellent", "fantastic", "wonderful", "love", "amazing",
-      "good", "delightful", "pleased", "satisfied", "enjoyable", "positive",
-      "beautiful", "pleasant", "happy", "recommend", "top-notch", "perfect",
-      "friendly", "exceptional", "remarkable", "outstanding", "impressive",
-      "superb", "brilliant", "high quality", "not bad", "decent", "fine",
-      "worth it", "satisfying", "above expectations", "better than expected",
-      "appreciated", "memorable", "valued", "lovely","not bad", "not terrible", "not poor", "not disappointing",
-      "not horrible", "not awful", "not unpleasant", "not a waste",
-      "not a regret", "not low quality", "not below expectations",
-      "not lacking", "not mediocre", "not subpar"];
-    const negativeKeywords = ["bad", "terrible", "poor", "disappointing", "horrible", "awful",
-      "unpleasant", "worse", "mediocre", "annoyed", "upset", "unsatisfactory",
-      "dislike", "hate", "unhappy", "not good", "waste", "low quality",
-      "regret", "frustrated", "unfortunate", "negative", "not worth",
-      "subpar", "lacking", "below expectations", "meh", "not great",
-      "needs improvement", "poorly", "didn't quite match"];
-
-    let positiveCount = 0;
-    let negativeCount = 0;
-
-    positiveKeywords.forEach(keyword => {
-      positiveCount += (reviews.match(new RegExp(`\\b${keyword}\\b`, 'g')) || []).length;
-    });
-
-    negativeKeywords.forEach(keyword => {
-      negativeCount += (reviews.match(new RegExp(`\\b${keyword}\\b`, 'g')) || []).length;
-    });
-
-    const totalReviews = restaurantData.flatMap(item => item.reviews).length;
-    const analysisSummary = `Sentiment Analysis:
-  - Positive Mentions: ${positiveCount}
-  - Negative Mentions: ${negativeCount}
-  - Total Reviews Analyzed: ${totalReviews}\n\n`;
-
-    const sentimentResult = positiveCount > negativeCount
-            ? "Overall, the sentiment is positive."
-            : negativeCount > positiveCount
-                    ? "Overall, the sentiment is negative."
-                    : "The sentiment is mixed.";
-
-    document.getElementById('analysisDisplay').textContent = analysisSummary + sentimentResult;
-  }
-
-
-  // Function to analyze Areas to Improve
-  function showAreasToImprove() {
-    const improvementKeywords = ["didn't quite match the hype", "slow", "expensive", "overcooked", "undercooked", "bland", "noisy",
-      "crowded", "small portions", "rushed", "inconsistent", "greasy", "cold",
-      "tough", "dry", "poor service", "lack of flavor", "overpriced", "stale",
-      "unfriendly", "long wait", "dirty", "cramped", "not fresh", "limited options",
-      "burnt", "too salty", "too sweet", "too spicy", "mediocre", "awkward seating",
-      "hard to find parking", "poor lighting", "uncomfortable chairs",
-      "slow service", "overly seasoned", "not worth it", "disorganized",
-      "unappetizing presentation", "weak drinks", "needs improvement",
-      "lack of variety", "not as expected"];
-    const reviews = restaurantData.flatMap(item => item.reviews).join(' ').toLowerCase();
-
-    let improvementSuggestions = improvementKeywords
-            .map(keyword => {
-              const count = (reviews.match(new RegExp(`\\b${keyword}\\b`, 'g')) || []).length;
-              return count > 0 ? `${keyword}: mentioned ${count} times` : null;
-            })
-            .filter(Boolean)  // Filter out keywords with zero mentions
-            .join('\n');
-
-    improvementSuggestions = improvementSuggestions || 'No specific areas for improvement identified.';
-
-    document.getElementById('analysisDisplay').textContent = `Areas to Improve:\n${improvementSuggestions}`;
-  }
-
-
-  // Function to display Menu Feedback
-  function showMenuFeedback() {
-    const feedbackText = restaurantData.flatMap(item => item.reviews).join(' ').toLowerCase();
-
-    // Keywords to track in the reviews
-    const positiveKeywords = ["delicious", "tasty", "amazing", "perfect", "excellent", "not disappoint",
-      "savory", "flavorful", "mouthwatering", "succulent", "fresh", "well-seasoned",
-      "appetizing", "satisfying", "pleasing", "well-cooked", "balanced flavors",
-      "impressive", "exquisite", "spot-on", "worth every penny", "rich", "yummy",
-      "divine", "well-prepared", "just right", "authentic", "fantastic", "scrumptious",
-      "high quality", "tender", "not bland", "not overcooked", "not dry", "not undercooked", "not bland", "not disappointing", "not bad", "not overcooked", "not poor",
-      "not dry", "not undercooked", "not greasy", "not tasteless", "not stale",
-      "not flavorless", "not unappetizing", "not soggy", "not cold", "not low quality",
-      "not tough", "not rubbery", "not artificial", "not overpriced"];
-    const negativeKeywords = ["bland", "disappointing", "bad", "poor", "overcooked", "dry", "tasteless",
-      "unappetizing", "stale", "undercooked", "greasy", "unpleasant", "flavorless",
-      "soggy", "too salty", "too sweet", "too spicy", "burnt", "cold", "not fresh",
-      "low quality", "rubbery", "overpriced", "inedible", "mediocre", "not worth it",
-      "artificial", "unbalanced", "tough", "dull", "not satisfying", "lackluster",
-      "overdone", "messy", "not as expected", "not impressive", "not worth the money"];
-
-    // Count occurrences of positive and negative words
-    let positiveCount = 0;
-    let negativeCount = 0;
-
-    positiveKeywords.forEach(keyword => {
-      positiveCount += (feedbackText.match(new RegExp(`\\b${keyword}\\b`, 'g')) || []).length;
-    });
-
-    negativeKeywords.forEach(keyword => {
-      negativeCount += (feedbackText.match(new RegExp(`\\b${keyword}\\b`, 'g')) || []).length;
-    });
-
-    // Generate analysis results
-    let analysisResult = `Menu Feedback Analysis:\nPositive Mentions: ${positiveCount}\nNegative Mentions: ${negativeCount}\n\n`;
-    if (positiveCount > negativeCount) {
-      analysisResult += "Overall, customers seem to have a positive experience with the menu.";
-    } else if (negativeCount > positiveCount) {
-      analysisResult += "There are more negative mentions, indicating potential areas to improve in the menu.";
-    } else {
-      analysisResult += "The feedback is mixed with equal mentions of positives and negatives.";
-    }
-
-    // Display analysis results
-    document.getElementById('analysisDisplay').textContent = analysisResult;
-  }
-
+  setInterval(updateDateTime, 1000);
+  updateDateTime();
 </script>
+<script>
+  function signOut() {
+    // Clear any session-related data if stored
+    sessionStorage.clear();
+    localStorage.clear();
+
+    // Redirect to index.html
+    window.location.href = "index.html";
+  }
+</script>
+
+<script src="analysisFunction.js"></script>
+<script src="posAnalysis.js"></script>
 </body>
 </html>

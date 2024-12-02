@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Item</title>
+    <link rel="stylesheet" href="styles_add_item.css">
+</head>
+<body>
+<div class="page-container">
+    <header class="header">
+        <h1 id="restaurant-name">Restaurant Name</h1>
+        <p id="current-date"></p>
+    </header>
+    <main>
+        <section class="form-section">
+            <h2 class="title">Add Item</h2>
+            <form id="add-item-form" class="form">
+                <div class="form-group">
+                    <label for="item_name">Item Name</label>
+                    <input type="text" id="item_name" class="form-input" placeholder="Enter item name" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" id="price" class="form-input" placeholder="Enter price" step="0.01" required>
+                </div>
+                <button type="submit" class="btn">Add Item</button>
+            </form>
+            <p id="feedback-message" class="feedback-message"></p>
+        </section>
+    </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

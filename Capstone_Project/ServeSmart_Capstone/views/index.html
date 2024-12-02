@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SmartServe</title>
   <style>
-    /* Set the background image and center content */
+    /* Basic styles */
     body {
       margin: 0;
       padding: 0;
@@ -18,10 +18,18 @@
       font-family: Arial, sans-serif;
       color: #fff;
       text-align: center;
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    .container {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
     h1 {
-      font-size: 3rem;
+      font-size: 2rem;
       margin-bottom: 20px;
       text-transform: uppercase;
       letter-spacing: 2px;
@@ -39,7 +47,7 @@
       margin: 0 10px;
       padding: 10px 20px;
       border-radius: 5px;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(255, 255, 255, 0.2);
       transition: background-color 0.3s, color 0.3s;
     }
 
@@ -47,12 +55,61 @@
       background-color: #00c3ff;
       color: #000;
     }
+
+    .theme-toggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 10px;
+      border-radius: 50%;
+      border: none;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .theme-toggle:hover {
+      background-color: #fff;
+      color: #000;
+    }
   </style>
 </head>
 <body>
-<div>
-  <h1>Welcome to Smart Serve</h1>
-  <p>Please <a href="/signin.html">Sign In</a> or <a href="/signup.html">Sign Up</a>.</p>
+<button class="theme-toggle" id="themeToggle">🌙</button>
+<div class="container">
+  <h1 id="greeting">Welcome to Smart Serve</h1>
+  <p>Please <a href="/signin.html">Sign In</a> or <a href="/signup.html">Sign Up</a></p>
 </div>
+
+<script>
+  // Dynamic Greeting Based on Time
+  const greetingElement = document.getElementById('greeting');
+  const hours = new Date().getHours();
+  let greetingText = "Welcome to Smart Serve";
+
+  if (hours < 12) {
+    greetingText = "Good Morning! Welcome to Smart Serve";
+  } else if (hours < 18) {
+    greetingText = "Good Afternoon! Welcome to Smart Serve";
+  } else {
+    greetingText = "Good Evening! Welcome to Smart Serve";
+  }
+
+  greetingElement.textContent = greetingText;
+
+  // Theme Toggle Functionality
+  const themeToggle = document.getElementById('themeToggle');
+  let isDarkMode = true;
+
+  themeToggle.addEventListener('click', () => {
+    isDarkMode = !isDarkMode;
+    document.body.style.backgroundColor = isDarkMode ? '#000' : '#fff';
+    document.body.style.color = isDarkMode ? '#fff' : '#000';
+    themeToggle.textContent = isDarkMode ? '🌙' : '☀️';
+  });
+</script>
 </body>
 </html>

@@ -2,9 +2,9 @@
   "name": "smartserve",
   "version": "1.0.0",
   "description": "SmartServe Project",
-  "main": "server.js",
+  "main": "yelpFetchData.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node yelpFetchData.js",
     "fetch-yelp": "node yelpFetch.js"
   },
   "dependencies": {

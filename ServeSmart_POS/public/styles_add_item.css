@@ -1,0 +1,100 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #1971f5; /* Use a solid color instead of the gradient */
+    color: #ffffff;
+}
+
+.page-container {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+}
+
+.header {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.8em;
+    color: #f12711;
+}
+
+.header p {
+    margin: 5px 0 0;
+    font-size: 1em;
+    color: #555;
+}
+
+.form-section {
+    background: #fff;
+    padding: 35px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.title {
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    font-weight: bold;
+    color: #f12711;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    font-size: 0.9em;
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: #264595;
+    box-shadow: 0 0 5px rgba(241, 39, 17, 0.5);
+}
+
+.btn {
+    background: #117af1;
+    color: #fff;
+    font-size: 1em;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+}
+
+.btn:hover {
+    background: #0c3dd1;
+}
+
+.feedback-message {
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: #f12711;
+    text-align: center;
+    display: none;
+}
