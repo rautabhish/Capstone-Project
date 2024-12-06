@@ -105,6 +105,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let totalItemsSold = 0;
         let fractionPassed = 0;
 
+        // day fractionPassed= endOfDay−startDate / currentDate−startDate
+        // week fractionPassed = endOfWeek−startDate / currentDate−startDate
+        //month fractionPassed = endOfMonth−startDate / currentDate−startDate
+
+
+
         switch (period) {
             case 'day':
                 startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
