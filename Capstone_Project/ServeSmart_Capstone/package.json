@@ -2,7 +2,7 @@
   "name": "smartserve",
   "version": "1.0.0",
   "description": "SmartServe project using Node.js and Cassandra",
-  "main": "app.js",
+  "main": "yelpFetchData.js",
   "scripts": {
     "start": "node yelpFetchData.js"
   },
