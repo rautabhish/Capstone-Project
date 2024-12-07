@@ -9,11 +9,14 @@
       "destination": "/analysisFunction.js"
     }
   ],
-  "public": "views",
   "builds": [
     {
-      "src": "*.js",
+      "src": "views/*.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "views/*.html",
+      "use": "@vercel/static"
     }
   ]
 }
