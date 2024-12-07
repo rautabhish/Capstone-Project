@@ -1,9 +1,14 @@
 {
-  "version": 2,
   "builds": [
-    { "src": "yelpFetchData.js", "use": "@vercel/node" }
+    {
+      "src": "yelpFetchData.js",
+      "use": "@vercel/node"
+    }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "yelpFetchData.js" }
+    {
+      "src": "/(.*)",
+      "dest": "yelpFetchData.js"
+    }
   ]
 }
