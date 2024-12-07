@@ -1,8 +1,19 @@
 {
   "rewrites": [
     {
-      "source": "/((?!assets/).*)",
+      "source": "/api/yelpFetchData",
       "destination": "/yelpFetchData.js"
+    },
+    {
+      "source": "/api/analysisFunction",
+      "destination": "/analysisFunction.js"
+    }
+  ],
+  "public": "views",
+  "builds": [
+    {
+      "src": "*.js",
+      "use": "@vercel/node"
     }
   ]
 }
