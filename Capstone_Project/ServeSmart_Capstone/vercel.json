@@ -1,6 +1,8 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/Capstone_Project/api/yelpFetchData.js" },
-    { "source": "/(.*)", "destination": "/ServeSmart_POS/server.js" }
+    {
+      "source": "/((?!assets/).*)",
+      "destination": "/yelpFetchData.js"
+    }
   ]
 }
