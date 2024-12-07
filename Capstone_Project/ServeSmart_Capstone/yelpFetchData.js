@@ -11,17 +11,18 @@ const app = express();
 // Initialize the Cassandra client with AstraDB Secure Connect Bundle
 const client = new cassandra.Client({
     cloud: {
-        secureConnectBundle: path.join(__dirname, 'secure-connect-bundle.zip') // Make sure to upload the secure-connect bundle to your project.
+        secureConnectBundle: process.env.ASTRA_DB_CREDENTIALS_PATH, // Use environment variable for path to secure connect bundle
     },
     credentials: {
         username: process.env.ASTRA_DB_CLIENT_ID,
-        password: process.env.ASTRA_DB_CLIENT_SECRET
+        password: process.env.ASTRA_DB_CLIENT_SECRET,
     },
-    keyspace: process.env.ASTRA_DB_KEYSPACE
+    keyspace: process.env.ASTRA_DB_KEYSPACE,
 });
+
 // Middleware
 app.use(express.json());
-app.use(express.static('public')); // Serve static files from the "public" folder
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from the "public" folder
 
 // Yelp API details
 const apiKey = process.env.YELP_API_KEY; // Use environment variable for Yelp API key
@@ -33,7 +34,6 @@ async function fetchDataAndStore() {
     try {
         console.log('Started inserting/updating data into the database...');
 
-        // Fetch restaurant data from Yelp
         const response = await axios.get(yelpSearchUrl, {
             headers: { Authorization: `Bearer ${apiKey}` },
             params: { location: 'Boston', categories: 'restaurants', limit: 5 }
@@ -147,16 +147,8 @@ app.post('/dashboard', async (req, res) => {
 });
 
 // Start the server
-portfinder.basePort = 3000;
-
-portfinder.getPort((err, port) => {
-    if (err) {
-        console.error('Error finding an available port:', err);
-        return;
-    }
-
-    app.listen(port, async () => {
-        console.log(`Server running at http://localhost:${port}`);
-        await fetchDataAndStore();
-    });
+const port = process.env.PORT || 3000;
+app.listen(port, async () => {
+    console.log(`Server running at http://localhost:${port}`);
+    await fetchDataAndStore();
 });

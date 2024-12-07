@@ -2,7 +2,7 @@ const cassandra = require('cassandra-driver');
 
 // Initialize the Cassandra client with AstraDB Secure Connect Bundle
 const client = new cassandra.Client({
-    cloud: { secureConnectBundle: './secure-connect-smartserve.zip' },
+    cloud: { secureConnectBundle: process.env.ASTRA_DB_CREDENTIALS_PATH },  // Use environment variable
     keyspace: 'smartserve'
 });
 
@@ -10,13 +10,16 @@ async function createTables() {
     try {
         console.log('Creating tables in the SmartServe keyspace...');
 
+        // Connect to AstraDB first
+        await client.connect();
+
         // Create `users` table for user authentication and data
         const createUsersTable = `
             CREATE TABLE IF NOT EXISTS users (
-                username TEXT PRIMARY KEY,
-                password TEXT,
-                pin TEXT,
-                restaurant_name TEXT
+                                                 username TEXT PRIMARY KEY,
+                                                 password TEXT,
+                                                 pin TEXT,
+                                                 restaurant_name TEXT
             );
         `;
         await client.execute(createUsersTable);
@@ -25,10 +28,10 @@ async function createTables() {
         // Create `restaurant_info` table for storing Yelp restaurant data
         const createRestaurantInfoTable = `
             CREATE TABLE IF NOT EXISTS restaurant_info (
-                id UUID PRIMARY KEY,
-                restaurant_name TEXT,
-                ratings FLOAT,
-                reviews LIST<TEXT>
+                                                           id UUID PRIMARY KEY,
+                                                           restaurant_name TEXT,
+                                                           ratings FLOAT,
+                                                           reviews LIST<TEXT>
             );
         `;
         await client.execute(createRestaurantInfoTable);
@@ -37,11 +40,11 @@ async function createTables() {
         // Create `pos_dataset` table for storing POS data
         const createPosDatasetTable = `
             CREATE TABLE IF NOT EXISTS pos_dataset (
-                id UUID PRIMARY KEY,
-                date TIMESTAMP,
-                item_name TEXT,
-                price FLOAT,
-                restaurant_name TEXT
+                                                       id UUID PRIMARY KEY,
+                                                       date TIMESTAMP,
+                                                       item_name TEXT,
+                                                       price FLOAT,
+                                                       restaurant_name TEXT
             );
         `;
         await client.execute(createPosDatasetTable);

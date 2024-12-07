@@ -14,5 +14,9 @@
     "express": "^4.21.2",
     "portfinder": "^1.0.32",
     "uuid": "^10.0.0"
-  }
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
