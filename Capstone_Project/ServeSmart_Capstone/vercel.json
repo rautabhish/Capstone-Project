@@ -1,14 +1,8 @@
 {
-  "builds": [
+  "rewrites": [
     {
-      "src": "yelpFetchData.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "yelpFetchData.js"
+      "source": "/(.*)",
+      "destination": "/"
     }
   ]
 }
