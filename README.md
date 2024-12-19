@@ -16,6 +16,7 @@ This platform revolutionizes how restaurants apprehend and act on their overall 
 ![image](https://github.com/user-attachments/assets/267ca519-b64b-42b6-8e2f-5906a2f3d3f7)
 
 **Project Budget**
+
 ![image](https://github.com/user-attachments/assets/a4506e40-872c-400c-af62-c8891a60b847)
 
 **GUI**
